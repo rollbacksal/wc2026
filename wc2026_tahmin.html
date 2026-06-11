@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dünya Kupası 2026 Tahmin</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a1a;min-height:100vh}
+.wrap{max-width:900px;margin:0 auto;padding:14px}
+h1{font-size:21px;font-weight:700;text-align:center;margin-bottom:2px}
+.sub{font-size:12px;color:#888;text-align:center;margin-bottom:14px}
+.screen{display:none}.screen.active{display:block}
+/* home */
+.home-box{max-width:320px;margin:0 auto;padding:20px 0}
+.lbl{font-size:12px;color:#555;display:block;margin-bottom:5px}
+.name-inp{width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px}
+.name-inp:focus{border-color:#1a1a1a}
+/* buttons */
+.btn{padding:7px 15px;font-size:13px;border-radius:7px;border:1px solid #ddd;background:#fff;cursor:pointer;font-family:inherit}
+.btn:hover{background:#f0f0ee}
+.btn-dark{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.btn-dark:hover{background:#333}
+.btn-green{background:#16a34a;color:#fff;border-color:#16a34a}
+.btn-sm{padding:4px 9px;font-size:11px}
+/* progress */
+.prog-wrap{margin-bottom:10px}
+.prog-bar{height:4px;background:#e5e5e5;border-radius:2px}
+.prog-fill{height:100%;background:#16a34a;border-radius:2px;transition:width .3s}
+.prog-lbl{font-size:11px;color:#888;margin-bottom:4px}
+/* group step */
+.group-title{font-size:15px;font-weight:700;margin-bottom:10px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.two-col{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid #e5e5e5;border-radius:9px;overflow:hidden}
+.card-head{padding:7px 11px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;background:#f8f8f6;color:#666;border-bottom:1px solid #e5e5e5}
+/* match rows */
+.match-row{display:flex;align-items:center;padding:7px 10px;border-top:1px solid #f0f0f0;gap:8px}
+.match-row:first-of-type{border-top:none}
+.teams{flex:1;display:flex;align-items:center;gap:6px;font-size:12px;min-width:0}
+.team{display:flex;align-items:center;gap:4px;min-width:0}
+.flag{font-size:13px;flex-shrink:0}
+.tname{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60px}
+.vs{font-size:10px;color:#ccc;flex-shrink:0}
+.btns{display:flex;gap:3px;flex-shrink:0}
+.rb{width:30px;height:26px;border-radius:5px;border:1px solid #ddd;background:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;color:#555;transition:all .1s}
+.rb:hover{background:#f0f0ee}
+.rb.sel-1{background:#16a34a;color:#fff;border-color:#16a34a}
+.rb.sel-x{background:#d97706;color:#fff;border-color:#d97706}
+.rb.sel-2{background:#2563eb;color:#fff;border-color:#2563eb}
+/* standings */
+.st-table{width:100%;border-collapse:collapse;font-size:12px}
+.st-table th{padding:5px 7px;font-size:10px;color:#888;font-weight:600;text-transform:uppercase;border-bottom:1px solid #e5e5e5;text-align:left}
+.st-table th:not(:first-child):not(:nth-child(2)){text-align:center}
+.st-table td{padding:5px 7px;border-bottom:1px solid #f5f5f5}
+.st-table td:not(:first-child):not(:nth-child(2)){text-align:center}
+.st-table tr:last-child td{border-bottom:none}
+.st-table tr.r1{background:#f0fdf4}
+.st-table tr.r2{background:#f0fdf4}
+.st-table tr.r3{background:#fffbeb}
+.rk{display:inline-flex;width:17px;height:17px;border-radius:50%;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.rk1{background:#1a1a1a;color:#fff}
+.rk2{background:#555;color:#fff}
+.rk3{background:#d97706;color:#fff}
+.rk4{background:#e5e5e5;color:#888}
+/* thirds */
+.thirds-tbl{width:100%;border-collapse:collapse;background:#fff;border-radius:9px;overflow:hidden;border:1px solid #e5e5e5;font-size:12px;margin-bottom:12px}
+.thirds-tbl th{padding:6px 9px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;background:#f8f8f6;color:#666;border-bottom:1px solid #e5e5e5;text-align:left}
+.thirds-tbl td{padding:6px 9px;border-bottom:1px solid #f5f5f5}
+.thirds-tbl tr:last-child td{border-bottom:none}
+.thirds-tbl tr.pass td{background:#f0fdf4}
+.thirds-tbl tr.out td{background:#fef2f2;opacity:.7}
+.bdg{display:inline-block;padding:1px 6px;border-radius:9px;font-size:10px;font-weight:700}
+.bdg-p{background:#dcfce7;color:#15803d}
+.bdg-o{background:#fee2e2;color:#dc2626}
+.bdg-t{background:#fef3c7;color:#d97706}
+/* bracket */
+.bk-outer{overflow-x:auto;padding-bottom:6px}
+.bk-inner{display:flex;gap:5px;min-width:840px;align-items:stretch}
+.rc{display:flex;flex-direction:column;flex:1;min-width:0}
+.rl{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#999;text-align:center;padding:3px 0 5px}
+.mc{display:flex;flex-direction:column;justify-content:space-around;flex:1;gap:3px}
+.mb{background:#fff;border:1px solid #e5e5e5;border-radius:6px;overflow:hidden;cursor:pointer}
+.mb:hover{border-color:#999}
+.mt{display:flex;align-items:center;gap:5px;padding:5px 6px;font-size:10.5px;min-height:25px}
+.mt+.mt{border-top:1px solid #f0f0f0}
+.mt.win{background:#f0fdf4}.mt.win .mn{font-weight:700;color:#15803d}
+.mt.lose .mn{color:#ccc}
+.mf{font-size:11px;flex-shrink:0}
+.mn{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#1a1a1a}
+.mt.lose .mn{color:#ccc}
+.champ-c{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 4px;min-width:82px;flex-shrink:0}
+.ct{font-size:24px;margin:5px 0 3px}
+.cl{font-size:9px;color:#999;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}
+.cn{font-size:11px;font-weight:700;text-align:center;color:#1a1a1a;min-height:15px}
+/* nav */
+.nav{display:flex;gap:8px;margin-top:12px;align-items:center;flex-wrap:wrap}
+/* share */
+.share-box{background:#fff;border:1px solid #e5e5e5;border-radius:10px;padding:16px;text-align:center;margin-bottom:12px}
+.share-url{padding:8px 10px;background:#f8f8f6;border:1px solid #e5e5e5;border-radius:6px;font-size:11px;word-break:break-all;margin:10px 0;color:#333;text-align:left}
+/* view tabs */
+.tabs{display:flex;gap:2px;border-bottom:1px solid #ddd;margin-bottom:12px}
+.tab{padding:6px 13px;font-size:12px;border:none;border-bottom:2px solid transparent;background:none;cursor:pointer;color:#777;font-family:inherit}
+.tab.active{color:#1a1a1a;border-bottom-color:#1a1a1a;font-weight:600}
+.info{font-size:11px;color:#666;margin-bottom:10px;padding:6px 10px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>🏆 Dünya Kupası 2026</h1>
+<p class="sub">Maç maç tahmin yap · 1X2 sistemi · Turnuva ağacını oluştur</p>
+
+<!-- HOME -->
+<div id="s-home" class="screen active">
+  <div class="home-box">
+    <label class="lbl">Adın nedir?</label>
+    <input class="name-inp" id="pname" placeholder="Adını gir..." maxlength="24">
+    <button class="btn btn-dark" style="width:100%;padding:10px" id="start-btn">Tahmine Başla →</button>
+    <div style="text-align:center;margin-top:10px">
+      <button class="btn btn-sm" id="load-btn">📎 Paylaşılan tahmini görüntüle</button>
+    </div>
+  </div>
+</div>
+
+<!-- PREDICT -->
+<div id="s-predict" class="screen">
+  <div class="prog-wrap">
+    <div class="prog-lbl" id="prog-lbl"></div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <div id="pred-content"></div>
+  <div class="nav" id="pred-nav"></div>
+</div>
+
+<!-- RESULT -->
+<div id="s-result" class="screen">
+  <div class="share-box">
+    <div style="font-size:28px;margin-bottom:6px">🎉</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px">Tahmin hazır!</div>
+    <div style="font-size:12px;color:#666;margin-bottom:0">Linki kopyala ve arkadaşlarınla paylaş</div>
+    <div class="share-url" id="share-url"></div>
+    <button class="btn btn-dark" id="copy-btn" style="margin-right:6px">🔗 Linki Kopyala</button>
+    <button class="btn" id="view-btn">👁 Görüntüle</button>
+  </div>
+  <div class="nav"><button class="btn" id="restart-btn">🔄 Yeni Tahmin</button></div>
+</div>
+
+<!-- VIEW -->
+<div id="s-view" class="screen">
+  <div style="margin-bottom:10px">
+    <div style="font-size:17px;font-weight:700" id="v-name"></div>
+    <div style="font-size:11px;color:#666;margin-top:2px" id="v-champ"></div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" data-tab="vt-groups">Gruplar</button>
+    <button class="tab" data-tab="vt-thirds">3. Sıra</button>
+    <button class="tab" data-tab="vt-bracket">Ağaç</button>
+  </div>
+  <div id="vt-groups" class="vtab"></div>
+  <div id="vt-thirds" class="vtab" style="display:none"></div>
+  <div id="vt-bracket" class="vtab" style="display:none"><div class="bk-outer"><div class="bk-inner" id="v-bracket"></div></div></div>
+  <div class="nav">
+    <button class="btn" id="v-home-btn">🏠 Ana Sayfa</button>
+    <button class="btn btn-dark" id="v-new-btn">➕ Yeni Tahmin</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ---- DATA ----
+var GD = {
+  A:[["🇲🇽","Meksika"],["🇿🇦","G.Afrika"],["🇰🇷","G.Kore"],["🇨🇿","Çekya"]],
+  B:[["🇨🇦","Kanada"],["🇧🇦","Bosna H."],["🇶🇦","Katar"],["🇨🇭","İsviçre"]],
+  C:[["🇧🇷","Brezilya"],["🇲🇦","Fas"],["🇭🇹","Haiti"],["🏴󠁧󠁢󠁳󠁣󠁴󠁿","İskoçya"]],
+  D:[["🇺🇸","ABD"],["🇵🇾","Paraguay"],["🇦🇺","Avustralya"],["🇹🇷","Türkiye"]],
+  E:[["🇩🇪","Almanya"],["🇨🇼","Curaçao"],["🇨🇮","F.Fildişi"],["🇪🇨","Ekvador"]],
+  F:[["🇳🇱","Hollanda"],["🇯🇵","Japonya"],["🇸🇪","İsveç"],["🇹🇳","Tunus"]],
+  G:[["🇧🇪","Belçika"],["🇪🇬","Mısır"],["🇮🇷","İran"],["🇳🇿","Y.Zellanda"]],
+  H:[["🇪🇸","İspanya"],["🇨🇻","K.Verde"],["🇸🇦","S.Arabistan"],["🇺🇾","Uruguay"]],
+  I:[["🇫🇷","Fransa"],["🇸🇳","Senegal"],["🇮🇶","Irak"],["🇳🇴","Norveç"]],
+  J:[["🇦🇷","Arjantin"],["🇩🇿","Cezayir"],["🇦🇹","Avusturya"],["🇯🇴","Ürdün"]],
+  K:[["🇵🇹","Portekiz"],["🇨🇩","Kongo"],["🇺🇿","Özbekistan"],["🇨🇴","Kolombiya"]],
+  L:[["🏴󠁧󠁢󠁥󠁮󠁧󠁿","İngiltere"],["🇭🇷","Hırvatistan"],["🇬🇭","Gana"],["🇵🇦","Panama"]]
+};
+var GK = Object.keys(GD);
+var PAIRS = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
+
+// Annex C
+var AC = (function(){
+  var raw=[
+    [["E","F","G","H","I","J","K","L"],"E","J","I","F","H","G","L","K"],
+    [["D","F","G","H","I","J","K","L"],"H","G","I","D","J","F","L","K"],
+    [["D","E","G","H","I","J","K","L"],"E","J","I","D","H","G","L","K"],
+    [["D","E","F","H","I","J","K","L"],"E","J","I","D","H","F","L","K"],
+    [["D","E","F","G","I","J","K","L"],"E","G","I","D","J","F","L","K"],
+    [["D","E","F","G","H","J","K","L"],"E","G","J","D","H","F","L","K"],
+    [["D","E","F","G","H","I","K","L"],"E","G","I","D","H","F","L","K"],
+    [["D","E","F","G","H","I","J","L"],"E","G","J","D","H","F","L","I"],
+    [["D","E","F","G","H","I","J","K"],"E","G","J","D","H","F","I","K"],
+    [["C","F","G","H","I","J","K","L"],"H","G","I","C","J","F","L","K"],
+    [["C","E","G","H","I","J","K","L"],"E","J","I","C","H","G","L","K"],
+    [["C","E","F","H","I","J","K","L"],"E","J","I","C","H","F","L","K"],
+    [["C","E","F","G","I","J","K","L"],"E","G","I","C","J","F","L","K"],
+    [["C","E","F","G","H","J","K","L"],"E","G","J","C","H","F","L","K"],
+    [["C","E","F","G","H","I","K","L"],"E","G","I","C","H","F","L","K"],
+    [["C","E","F","G","H","I","J","L"],"E","G","J","C","H","F","L","I"],
+    [["C","E","F","G","H","I","J","K"],"E","G","J","C","H","F","I","K"],
+    [["C","D","G","H","I","J","K","L"],"H","G","I","C","J","D","L","K"],
+    [["C","D","F","H","I","J","K","L"],"C","J","I","D","H","F","L","K"],
+    [["C","D","F","G","I","J","K","L"],"C","G","I","D","J","F","L","K"],
+    [["C","D","F","G","H","J","K","L"],"C","G","J","D","H","F","L","K"],
+    [["C","D","F","G","H","I","K","L"],"C","G","I","D","H","F","L","K"],
+    [["C","D","F","G","H","I","J","L"],"C","G","J","D","H","F","L","I"],
+    [["C","D","F","G","H","I","J","K"],"C","G","J","D","H","F","I","K"],
+    [["C","D","E","H","I","J","K","L"],"E","J","I","C","H","D","L","K"],
+    [["C","D","E","G","I","J","K","L"],"E","G","I","C","J","D","L","K"],
+    [["C","D","E","G","H","J","K","L"],"E","G","J","C","H","D","L","K"],
+    [["C","D","E","G","H","I","K","L"],"E","G","I","C","H","D","L","K"],
+    [["C","D","E","G","H","I","J","L"],"E","G","J","C","H","D","L","I"],
+    [["C","D","E","G","H","I","J","K"],"E","G","J","C","H","D","I","K"],
+    [["C","D","E","F","I","J","K","L"],"C","J","E","D","I","F","L","K"],
+    [["C","D","E","F","H","J","K","L"],"C","J","E","D","H","F","L","K"],
+    [["C","D","E","F","H","I","K","L"],"C","E","I","D","H","F","L","K"],
+    [["C","D","E","F","H","I","J","L"],"C","J","E","D","H","F","L","I"],
+    [["C","D","E","F","H","I","J","K"],"C","J","E","D","H","F","I","K"],
+    [["C","D","E","F","G","J","K","L"],"C","G","E","D","J","F","L","K"],
+    [["C","D","E","F","G","I","K","L"],"C","G","E","D","I","F","L","K"],
+    [["C","D","E","F","G","I","J","L"],"C","G","E","D","J","F","L","I"],
+    [["C","D","E","F","G","I","J","K"],"C","G","E","D","J","F","I","K"],
+    [["C","D","E","F","G","H","K","L"],"C","G","E","D","H","F","L","K"],
+    [["C","D","E","F","G","H","J","L"],"C","G","J","D","H","F","L","E"],
+    [["C","D","E","F","G","H","J","K"],"C","G","J","D","H","F","E","K"],
+    [["C","D","E","F","G","H","I","L"],"C","G","E","D","H","F","L","I"],
+    [["C","D","E","F","G","H","I","K"],"C","G","E","D","H","F","I","K"],
+    [["C","D","E","F","G","H","I","J"],"C","G","J","D","H","F","E","I"],
+    [["B","F","G","H","I","J","K","L"],"H","J","B","F","I","G","L","K"],
+    [["B","E","G","H","I","J","K","L"],"E","J","I","B","H","G","L","K"],
+    [["B","E","F","H","I","J","K","L"],"E","J","B","F","I","H","L","K"],
+    [["B","E","F","G","I","J","K","L"],"E","J","B","F","I","G","L","K"],
+    [["B","E","F","G","H","J","K","L"],"E","J","B","F","H","G","L","K"],
+    [["B","E","F","G","H","I","K","L"],"E","G","B","F","I","H","L","K"],
+    [["B","E","F","G","H","I","J","L"],"E","J","B","F","H","G","L","I"],
+    [["B","E","F","G","H","I","J","K"],"E","J","B","F","H","G","I","K"],
+    [["B","D","G","H","I","J","K","L"],"H","J","B","D","I","G","L","K"],
+    [["B","D","F","H","I","J","K","L"],"H","J","B","D","I","F","L","K"],
+    [["B","D","F","G","I","J","K","L"],"I","G","B","D","J","F","L","K"],
+    [["B","D","F","G","H","J","K","L"],"H","G","B","D","J","F","L","K"],
+    [["B","D","F","G","H","I","K","L"],"H","G","B","D","I","F","L","K"],
+    [["B","D","F","G","H","I","J","L"],"H","G","B","D","J","F","L","I"],
+    [["B","D","F","G","H","I","J","K"],"H","G","B","D","J","F","I","K"],
+    [["B","D","E","H","I","J","K","L"],"E","J","B","D","I","H","L","K"],
+    [["B","D","E","G","I","J","K","L"],"E","J","B","D","I","G","L","K"],
+    [["B","D","E","G","H","J","K","L"],"E","J","B","D","H","G","L","K"],
+    [["B","D","E","G","H","I","K","L"],"E","G","B","D","I","H","L","K"],
+    [["B","D","E","G","H","I","J","L"],"E","J","B","D","H","G","L","I"],
+    [["B","D","E","G","H","I","J","K"],"E","J","B","D","H","G","I","K"],
+    [["B","D","E","F","I","J","K","L"],"E","J","B","D","I","F","L","K"],
+    [["B","D","E","F","H","J","K","L"],"E","J","B","D","H","F","L","K"],
+    [["B","D","E","F","H","I","K","L"],"E","I","B","D","H","F","L","K"],
+    [["B","D","E","F","H","I","J","L"],"E","J","B","D","H","F","L","I"],
+    [["B","D","E","F","H","I","J","K"],"E","J","B","D","H","F","I","K"],
+    [["B","D","E","F","G","J","K","L"],"E","G","B","D","J","F","L","K"],
+    [["B","D","E","F","G","I","K","L"],"E","G","B","D","I","F","L","K"],
+    [["B","D","E","F","G","I","J","L"],"E","G","B","D","J","F","L","I"],
+    [["B","D","E","F","G","I","J","K"],"E","G","B","D","J","F","I","K"],
+    [["B","D","E","F","G","H","K","L"],"E","G","B","D","H","F","L","K"],
+    [["B","D","E","F","G","H","J","L"],"H","G","B","D","J","F","L","E"],
+    [["B","D","E","F","G","H","J","K"],"H","G","B","D","J","F","E","K"],
+    [["B","D","E","F","G","H","I","L"],"E","G","B","D","H","F","L","I"],
+    [["B","D","E","F","G","H","I","K"],"E","G","B","D","H","F","I","K"],
+    [["B","D","E","F","G","H","I","J"],"H","G","B","D","J","F","E","I"],
+    [["A","F","G","H","I","J","K","L"],"F","J","A","H","I","G","L","K"],
+    [["A","E","G","H","I","J","K","L"],"E","J","I","A","H","G","L","K"],
+    [["A","E","F","H","I","J","K","L"],"E","J","A","F","I","H","L","K"],
+    [["A","E","F","G","I","J","K","L"],"E","J","A","F","I","G","L","K"],
+    [["A","E","F","G","H","J","K","L"],"E","J","A","F","H","G","L","K"],
+    [["A","E","F","G","H","I","K","L"],"E","G","A","F","I","H","L","K"],
+    [["A","E","F","G","H","I","J","L"],"E","J","A","F","H","G","L","I"],
+    [["A","E","F","G","H","I","J","K"],"E","J","A","F","H","G","I","K"],
+    [["A","D","G","H","I","J","K","L"],"H","J","A","D","I","G","L","K"],
+    [["A","D","F","H","I","J","K","L"],"H","J","A","D","I","F","L","K"],
+    [["A","D","F","G","I","J","K","L"],"I","G","A","D","J","F","L","K"],
+    [["A","D","F","G","H","J","K","L"],"H","G","A","D","J","F","L","K"],
+    [["A","D","F","G","H","I","K","L"],"H","G","A","D","I","F","L","K"],
+    [["A","D","F","G","H","I","J","L"],"H","G","A","D","J","F","L","I"],
+    [["A","D","F","G","H","I","J","K"],"H","G","A","D","J","F","I","K"],
+    [["A","D","E","H","I","J","K","L"],"E","J","A","D","I","H","L","K"],
+    [["A","D","E","G","I","J","K","L"],"E","J","A","D","I","G","L","K"],
+    [["A","D","E","G","H","J","K","L"],"E","J","A","D","H","G","L","K"],
+    [["A","D","E","G","H","I","K","L"],"E","G","A","D","I","H","L","K"],
+    [["A","D","E","G","H","I","J","L"],"E","J","A","D","H","G","L","I"],
+    [["A","D","E","G","H","I","J","K"],"E","J","A","D","H","G","I","K"],
+    [["A","D","E","F","I","J","K","L"],"E","J","A","D","I","F","L","K"],
+    [["A","D","E","F","H","J","K","L"],"E","J","A","D","H","F","L","K"],
+    [["A","D","E","F","H","I","K","L"],"E","I","A","D","H","F","L","K"],
+    [["A","D","E","F","H","I","J","L"],"E","J","A","D","H","F","L","I"],
+    [["A","D","E","F","H","I","J","K"],"E","J","A","D","H","F","I","K"],
+    [["A","D","E","F","G","J","K","L"],"E","G","A","D","J","F","L","K"],
+    [["A","D","E","F","G","I","K","L"],"E","G","A","D","I","F","L","K"],
+    [["A","D","E","F","G","I","J","L"],"E","G","A","D","J","F","L","I"],
+    [["A","D","E","F","G","I","J","K"],"E","G","A","D","J","F","I","K"],
+    [["A","D","E","F","G","H","K","L"],"E","G","A","D","H","F","L","K"],
+    [["A","D","E","F","G","H","J","L"],"H","G","A","D","J","F","L","E"],
+    [["A","D","E","F","G","H","J","K"],"H","G","A","D","J","F","E","K"],
+    [["A","D","E","F","G","H","I","L"],"E","G","A","D","H","F","L","I"],
+    [["A","D","E","F","G","H","I","K"],"E","G","A","D","H","F","I","K"],
+    [["A","D","E","F","G","H","I","J"],"H","G","A","D","J","F","E","I"],
+    [["A","B","C","D","E","F","G","H"],"C","G","E","A","D","F","H","B"],
+    [["A","B","C","D","E","F","G","I"],"C","G","E","A","D","F","B","I"],
+    [["A","B","C","D","E","F","G","J"],"C","G","J","A","D","F","E","B"],
+    [["A","B","C","D","E","F","G","K"],"C","G","E","A","D","F","B","K"],
+    [["A","B","C","D","E","F","G","L"],"C","G","E","A","D","F","L","B"],
+    [["A","B","C","D","E","F","H","I"],"C","E","B","A","D","F","H","I"],
+    [["A","B","C","D","E","F","H","J"],"C","J","B","A","D","F","E","H"],
+    [["A","B","C","D","E","F","H","K"],"C","E","B","A","D","F","H","K"],
+    [["A","B","C","D","E","F","H","L"],"C","E","B","A","D","F","L","H"],
+    [["A","B","C","D","E","F","I","J"],"C","J","B","A","D","F","E","I"],
+    [["A","B","C","D","E","F","I","K"],"C","E","B","A","D","F","I","K"],
+    [["A","B","C","D","E","F","I","L"],"C","E","B","A","D","F","L","I"],
+    [["A","B","C","D","E","F","J","K"],"C","J","E","A","D","F","B","K"],
+    [["A","B","C","D","E","F","J","L"],"C","J","E","A","D","F","L","B"],
+    [["A","B","C","D","E","F","K","L"],"C","G","E","A","D","F","L","B"],
+    [["A","B","C","D","E","G","H","I"],"C","G","E","A","D","H","B","I"],
+    [["A","B","C","D","E","G","H","J"],"C","G","J","A","D","H","E","B"],
+    [["A","B","C","D","E","G","H","K"],"C","G","E","A","D","H","B","K"],
+    [["A","B","C","D","E","G","H","L"],"C","G","E","A","D","H","L","B"],
+    [["A","B","C","D","E","G","I","J"],"C","G","B","A","D","J","E","I"],
+    [["A","B","C","D","E","G","I","K"],"C","G","E","A","D","B","I","K"],
+    [["A","B","C","D","E","G","I","L"],"C","G","E","A","D","B","L","I"],
+    [["A","B","C","D","E","G","J","K"],"C","G","B","A","D","J","E","K"],
+    [["A","B","C","D","E","G","J","L"],"C","G","B","A","D","J","L","E"],
+    [["A","B","C","D","E","G","K","L"],"C","G","E","A","D","B","L","K"],
+    [["A","B","C","D","E","H","I","J"],"C","J","B","A","D","H","E","I"],
+    [["A","B","C","D","E","H","I","K"],"C","E","B","A","D","H","I","K"],
+    [["A","B","C","D","E","H","I","L"],"C","E","B","A","D","H","L","I"],
+    [["A","B","C","D","E","H","J","K"],"C","J","B","A","D","H","E","K"],
+    [["A","B","C","D","E","H","J","L"],"C","J","B","A","D","H","L","E"],
+    [["A","B","C","D","E","H","K","L"],"C","E","B","A","D","H","L","K"],
+    [["A","B","C","D","E","I","J","K"],"C","J","B","A","D","I","E","K"],
+    [["A","B","C","D","E","I","J","L"],"C","J","B","A","D","I","L","E"],
+    [["A","B","C","D","E","I","K","L"],"C","E","B","A","D","I","L","K"],
+    [["A","B","C","D","E","J","K","L"],"C","J","E","A","D","B","L","K"],
+    [["A","B","C","D","F","G","H","I"],"C","G","B","D","H","F","L","I"],
+    [["A","B","C","D","F","H","I","J"],"C","J","B","A","D","F","H","I"],
+    [["A","B","C","D","G","H","I","K"],"C","G","B","A","H","D","I","K"],
+    [["A","B","C","D","G","I","K","L"],"C","G","B","A","I","D","L","K"],
+    [["A","B","C","D","H","I","K","L"],"C","I","B","A","H","D","L","K"],
+    [["A","B","C","D","I","J","K","L"],"C","J","B","A","I","D","L","K"]
+  ];
+  var m={};
+  raw.forEach(function(r){
+    if(r[0].length!==8) return;
+    var k=r[0].slice().sort().join('');
+    m[k]=[r[1],r[2],r[3],r[4],r[5],r[6],r[7],r[8]];
+  });
+  return m;
+})();
+
+function lookupAC(pg){
+  var k=pg.slice().sort().join('');
+  var r=AC[k]; if(!r) return null;
+  var sl=['A','B','D','E','G','I','K','L'], res={};
+  sl.forEach(function(s,i){ res['1'+s]=r[i]; });
+  return res;
+}
+
+// ---- STATE ----
+var pname='', results={}, bracket={};
+
+function initResults(){
+  var r={};
+  GK.forEach(function(g){
+    r[g]={};
+    PAIRS.forEach(function(p){ r[g][p[0]+'_'+p[1]]=null; });
+  });
+  return r;
+}
+
+function initBracket(){
+  return{
+    r32:make16(),r16:make8(),qf:make4(),sf:make2(),
+    fin:{t1:{f:'',n:'?'},t2:{f:'',n:'?'},w:null}
+  };
+}
+function makeM(){return{t1:{f:'',n:'?'},t2:{f:'',n:'?'},w:null};}
+function make16(){var a=[];for(var i=0;i<16;i++)a.push(makeM());return a;}
+function make8(){var a=[];for(var i=0;i<8;i++)a.push(makeM());return a;}
+function make4(){var a=[];for(var i=0;i<4;i++)a.push(makeM());return a;}
+function make2(){return[makeM(),makeM()];}
+
+// ---- STANDINGS ----
+function calcSt(g){
+  var t=GD[g].map(function(td,i){return{i:i,f:td[0],n:td[1],pts:0,w:0,d:0,l:0,h:{}};});
+  PAIRS.forEach(function(p){
+    var a=p[0],b=p[1],res=results[g][a+'_'+b];
+    if(!res) return;
+    if(!t[a].h[b])t[a].h[b]=0;
+    if(!t[b].h[a])t[b].h[a]=0;
+    if(res==='1'){t[a].pts+=3;t[a].w++;t[b].l++;t[a].h[b]+=3;}
+    else if(res==='X'){t[a].pts+=1;t[b].pts+=1;t[a].d++;t[b].d++;t[a].h[b]+=1;t[b].h[a]+=1;}
+    else if(res==='2'){t[b].pts+=3;t[b].w++;t[a].l++;t[b].h[a]+=3;}
+  });
+  t.sort(function(a,b){
+    if(b.pts!==a.pts) return b.pts-a.pts;
+    var ah=a.h[b.i]||0, bh=b.h[a.i]||0;
+    return bh-ah;
+  });
+  return t;
+}
+
+function getThirds(){
+  return GK.map(function(g){
+    var st=calcSt(g), t=st[2];
+    return{g:g,f:t.f,n:t.n,pts:t.pts,w:t.w,d:t.d,l:t.l};
+  });
+}
+
+function getThirdStatus(arr){
+  var s=arr.slice().sort(function(a,b){return b.pts-a.pts||(a.g>b.g?1:-1);});
+  var cut=s.length>=8?s[7].pts:-1;
+  return arr.map(function(t){
+    return Object.assign({},t,{status:t.pts>cut?'pass':t.pts===cut?'tie':'out'});
+  });
+}
+
+// ---- SCREENS ----
+function show(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+}
+
+// ---- STEPS ----
+// 0-11: gruplar A-L, 12: 3.sıra, 13-17: bracket
+var curStep=0;
+
+function goStep(n){
+  if(n<0) return;
+  if(n>=18){save();return;}
+  curStep=n;
+  var pct=Math.round((n/17)*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  var lbl=n<=11?('Grup '+GK[n]+' ('+(n+1)+'/12)'):n===12?'3. Sıra Özeti':'Eleme Turu';
+  document.getElementById('prog-lbl').textContent=lbl;
+
+  var c=document.getElementById('pred-content');
+  var nav=document.getElementById('pred-nav');
+  c.innerHTML='';
+  nav.innerHTML='';
+
+  if(n<=11){
+    renderGroup(GK[n],c);
+    var backBtn=n>0?('<button class="btn" id="nav-back">← Geri</button>'):'';
+    var nextLbl=n===11?'3. Sıra →':'Grup '+GK[n+1]+' →';
+    nav.innerHTML=backBtn+'<button class="btn btn-dark" id="nav-next">'+nextLbl+'</button>';
+    if(n>0) document.getElementById('nav-back').onclick=function(){goStep(n-1);};
+    document.getElementById('nav-next').onclick=function(){goStep(n+1);};
+  }
+  else if(n===12){
+    renderThirds(c);
+    nav.innerHTML='<button class="btn" id="nav-back">← Geri</button><button class="btn btn-dark" id="nav-next">Turnuva Ağacı →</button>';
+    document.getElementById('nav-back').onclick=function(){goStep(11);};
+    document.getElementById('nav-next').onclick=function(){goStep(13);};
+  }
+  else{
+    if(n===13) buildBracket();
+    renderBracketStep(n,c);
+    var isLast=n===17;
+    nav.innerHTML='<button class="btn" id="nav-back">← Geri</button><button class="btn '+(isLast?'btn-green':'btn-dark')+'" id="nav-next">'+(isLast?'✅ Kaydet':'Devam →')+'</button>';
+    document.getElementById('nav-back').onclick=function(){goStep(n-1);};
+    document.getElementById('nav-next').onclick=function(){goStep(n+1);};
+  }
+}
+
+// ---- RENDER GROUP ----
+function renderGroup(g,c){
+  var teams=GD[g];
+  var div=document.createElement('div');
+  div.innerHTML='<div class="info"><b>1</b> = Ev sahibi kazanır &nbsp; <b>X</b> = Beraberlik &nbsp; <b>2</b> = Deplasman kazanır</div>';
+
+  var grid=document.createElement('div');
+  grid.className='two-col';
+
+  // Maçlar
+  var left=document.createElement('div');
+  var leftCard=document.createElement('div');
+  leftCard.className='card';
+  leftCard.innerHTML='<div class="card-head">Grup '+g+' — Maçlar</div>';
+
+  PAIRS.forEach(function(p){
+    var a=p[0],b=p[1],key=a+'_'+b;
+    var res=results[g][key];
+    var row=document.createElement('div');
+    row.className='match-row';
+    row.innerHTML=
+      '<div class="teams">'+
+        '<div class="team"><span class="flag">'+teams[a][0]+'</span><span class="tname">'+teams[a][1]+'</span></div>'+
+        '<span class="vs">vs</span>'+
+        '<div class="team"><span class="flag">'+teams[b][0]+'</span><span class="tname">'+teams[b][1]+'</span></div>'+
+      '</div>'+
+      '<div class="btns">'+
+        '<button class="rb'+(res==='1'?' sel-1':'')+'" data-g="'+g+'" data-k="'+key+'" data-v="1">1</button>'+
+        '<button class="rb'+(res==='X'?' sel-x':'')+'" data-g="'+g+'" data-k="'+key+'" data-v="X">X</button>'+
+        '<button class="rb'+(res==='2'?' sel-2':'')+'" data-g="'+g+'" data-k="'+key+'" data-v="2">2</button>'+
+      '</div>';
+    leftCard.appendChild(row);
+  });
+  left.appendChild(leftCard);
+
+  // Puan tablosu
+  var right=document.createElement('div');
+  var rightCard=document.createElement('div');
+  rightCard.className='card';
+  rightCard.innerHTML='<div class="card-head">Puan Tablosu</div>';
+  var tbl=document.createElement('table');
+  tbl.className='st-table';
+  tbl.innerHTML='<thead><tr><th>#</th><th>Takım</th><th>O</th><th>G</th><th>B</th><th>M</th><th>P</th></tr></thead>';
+  var tbody=document.createElement('tbody');
+  tbody.id='st-'+g;
+  tbl.appendChild(tbody);
+  rightCard.appendChild(tbl);
+  right.appendChild(rightCard);
+
+  grid.appendChild(left);
+  grid.appendChild(right);
+  div.appendChild(grid);
+  c.appendChild(div);
+
+  updateSt(g);
+
+  // Events — event delegation
+  leftCard.addEventListener('click',function(e){
+    var btn=e.target.closest('.rb');
+    if(!btn) return;
+    var bg=btn.dataset.g, bk=btn.dataset.k, bv=btn.dataset.v;
+    results[bg][bk]=results[bg][bk]===bv?null:bv;
+    // update button styles
+    var row=btn.closest('.match-row');
+    row.querySelectorAll('.rb').forEach(function(b){
+      b.classList.remove('sel-1','sel-x','sel-2');
+    });
+    var newRes=results[bg][bk];
+    if(newRes==='1') btn.classList.add('sel-1');
+    else if(newRes==='X') btn.classList.add('sel-x');
+    else if(newRes==='2') btn.classList.add('sel-2');
+    updateSt(bg);
+  });
+}
+
+function updateSt(g){
+  var tbody=document.getElementById('st-'+g);
+  if(!tbody) return;
+  var st=calcSt(g);
+  var rk=['rk1','rk2','rk3','rk4'],rc=['r1','r2','r3',''];
+  tbody.innerHTML='';
+  st.forEach(function(t,i){
+    var played=t.w+t.d+t.l;
+    var tr=document.createElement('tr');
+    if(rc[i]) tr.className=rc[i];
+    tr.innerHTML='<td><span class="rk '+rk[i]+'">'+(i+1)+'</span></td>'+
+      '<td>'+t.f+' '+t.n+'</td>'+
+      '<td>'+played+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td>'+
+      '<td><b>'+t.pts+'</b></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+// ---- THIRDS ----
+function renderThirds(c){
+  var thirds=getThirds();
+  var statuses=getThirdStatus(thirds);
+  var sorted=statuses.slice().sort(function(a,b){return b.pts-a.pts;});
+  var tbl=document.createElement('table');
+  tbl.className='thirds-tbl';
+  tbl.innerHTML='<thead><tr><th>#</th><th>Grup</th><th>Takım</th><th>G</th><th>B</th><th>M</th><th>P</th><th>Durum</th></tr></thead>';
+  var tbody=document.createElement('tbody');
+  sorted.forEach(function(t,i){
+    var tr=document.createElement('tr');
+    tr.className=t.status==='pass'?'pass':'out';
+    var bdg=t.status==='pass'?'<span class="bdg bdg-p">✓ Geçti</span>':t.status==='tie'?'<span class="bdg bdg-t">~ Berabere</span>':'<span class="bdg bdg-o">✗ Elendi</span>';
+    tr.innerHTML='<td><b>'+(i+1)+'</b></td><td><b>'+t.g+'</b></td><td>'+t.f+' '+t.n+'</td>'+
+      '<td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td><td><b>'+t.pts+'</b></td><td>'+bdg+'</td>';
+    tbody.appendChild(tr);
+  });
+  tbl.appendChild(tbody);
+  c.innerHTML='<div class="info">En yüksek puanlı 8 takım Son 32\'ye geçer. Aynı puan = FIFA kura çeker.</div>';
+  c.appendChild(tbl);
+}
+
+// ---- BRACKET BUILD ----
+function buildBracket(){
+  bracket=initBracket();
+  var fixed=[
+    ['A',1,'B',1],['F',0,'C',1],['C',0,'F',1],['E',1,'I',1],
+    ['K',1,'L',1],['H',0,'J',1],['J',0,'H',1],['D',1,'G',1]
+  ];
+  fixed.forEach(function(fx,i){
+    var s1=calcSt(fx[0])[fx[1]], s2=calcSt(fx[2])[fx[3]];
+    bracket.r32[i].t1={f:s1.f,n:s1.n};
+    bracket.r32[i].t2={f:s2.f,n:s2.n};
+  });
+  var thirds=getThirds();
+  var statuses=getThirdStatus(thirds);
+  var pg=statuses.filter(function(t){return t.status==='pass';}).map(function(t){return t.g;});
+  var vtSlots=['A','B','D','E','G','I','K','L'];
+  if(pg.length===8){
+    var map=lookupAC(pg);
+    vtSlots.forEach(function(ws,si){
+      var w=calcSt(ws)[0];
+      var tg=map?map['1'+ws]:null;
+      var th=tg?statuses.find(function(x){return x.g===tg;}):null;
+      bracket.r32[8+si].t1={f:w.f,n:w.n};
+      bracket.r32[8+si].t2=th?{f:th.f,n:th.n}:{f:'',n:'3.Sıra'};
+    });
+  } else {
+    var srt=statuses.slice().sort(function(a,b){return b.pts-a.pts;});
+    var used={};
+    vtSlots.forEach(function(ws,si){
+      var w=calcSt(ws)[0];
+      var th=null;
+      for(var i=0;i<srt.length;i++){if(srt[i].g!==ws&&!used[srt[i].g]){th=srt[i];break;}}
+      if(th) used[th.g]=true;
+      bracket.r32[8+si].t1={f:w.f,n:w.n};
+      bracket.r32[8+si].t2=th?{f:th.f,n:th.n}:{f:'',n:'3.Sıra'};
+    });
+  }
+}
+
+// ---- BRACKET RENDER ----
+function renderBracketStep(step,c){
+  c.innerHTML='<div class="info">Kazananı seçmek için takıma tıkla</div><div class="bk-outer"><div class="bk-inner" id="bk"></div></div>';
+  drawBracket(step);
+}
+
+function drawBracket(step){
+  var inner=document.getElementById('bk');
+  if(!inner) return;
+  inner.innerHTML='';
+  var rounds=[
+    {l:'Son 32',d:bracket.r32,k:'r32'},
+    {l:'Son 16',d:bracket.r16,k:'r16'},
+    {l:'Çeyrek',d:bracket.qf,k:'qf'},
+    {l:'Yarı',d:bracket.sf,k:'sf'}
+  ];
+  var show=step-12; // step13=1round, step14=2rounds...
+  rounds.slice(0,show).forEach(function(rd){
+    var col=document.createElement('div'); col.className='rc';
+    var lbl=document.createElement('div'); lbl.className='rl'; lbl.textContent=rd.l; col.appendChild(lbl);
+    var mc=document.createElement('div'); mc.className='mc';
+    rd.d.forEach(function(m,i){ mc.appendChild(mkMatch(m,rd.k,i)); });
+    col.appendChild(mc); inner.appendChild(col);
+  });
+  // champ col
+  var cc=document.createElement('div'); cc.className='champ-c';
+  var fl=document.createElement('div'); fl.className='rl'; fl.textContent='Final'; cc.appendChild(fl);
+  var fb=mkMatch(bracket.fin,'fin',0); fb.style.marginBottom='5px'; cc.appendChild(fb);
+  var ct=document.createElement('div'); ct.className='ct'; ct.textContent='🏆';
+  var cl=document.createElement('div'); cl.className='cl'; cl.textContent='Şampiyon';
+  var cn=document.createElement('div'); cn.className='cn';
+  var fw=bracket.fin.w?(bracket.fin.w===1?bracket.fin.t1:bracket.fin.t2):null;
+  cn.textContent=fw?fw.f+' '+fw.n:'—';
+  cc.appendChild(ct); cc.appendChild(cl); cc.appendChild(cn); inner.appendChild(cc);
+}
+
+function mkMatch(m,round,idx){
+  var d=document.createElement('div'); d.className='mb';
+  [[m.t1,1],[m.t2,2]].forEach(function(pair){
+    var t=pair[0], tn=pair[1];
+    var row=document.createElement('div');
+    row.className='mt'+(m.w===tn?' win':m.w&&m.w!==tn?' lose':'');
+    row.innerHTML='<span class="mf">'+(t.f||'')+'</span><span class="mn">'+(t.n||'?')+'</span>';
+    row.onclick=function(){ pick(round,idx,tn); };
+    d.appendChild(row);
+  });
+  return d;
+}
+
+function pick(round,idx,tn){
+  var rm={r32:bracket.r32,r16:bracket.r16,qf:bracket.qf,sf:bracket.sf};
+  var m=round==='fin'?bracket.fin:rm[round][idx];
+  if(!m) return;
+  m.w=tn;
+  var w=tn===1?{f:m.t1.f,n:m.t1.n}:{f:m.t2.f,n:m.t2.n};
+  if(round==='fin'){ drawBracket(curStep); return; }
+  var nx={r32:'r16',r16:'qf',qf:'sf',sf:'fin'};
+  var nr=nx[round];
+  if(nr==='fin'){
+    bracket.fin[idx===0?'t1':'t2']=w;
+    bracket.fin.w=null;
+  } else {
+    var nm=rm[nr], qi=Math.floor(idx/2), sl=idx%2===0?'t1':'t2';
+    if(nm[qi]){ nm[qi][sl]=w; nm[qi].w=null; clearDown(nr,qi); }
+  }
+  drawBracket(curStep);
+}
+
+function clearDown(r,i){
+  var nx={r16:'qf',qf:'sf',sf:'fin'};
+  var rm={r16:bracket.r16,qf:bracket.qf,sf:bracket.sf};
+  var nr=nx[r]; if(!nr) return;
+  if(nr==='fin'){ bracket.fin[i===0?'t1':'t2']={f:'',n:'?'}; bracket.fin.w=null; }
+  else{ var qi=Math.floor(i/2),sl=i%2===0?'t1':'t2',nm=rm[nr]; if(nm&&nm[qi]){nm[qi][sl]={f:'',n:'?'};nm[qi].w=null;clearDown(nr,qi);} }
+}
+
+// ---- SAVE ----
+function save(){
+  var thirds=getThirds(), statuses=getThirdStatus(thirds);
+  var fw=bracket.fin.w?(bracket.fin.w===1?bracket.fin.t1:bracket.fin.t2):null;
+  var data={name:pname,results:results,thirds:statuses,bracket:bracket,champ:fw||{f:'',n:'Belirsiz'}};
+  var enc=btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  var url=location.href.split('?')[0]+'?t='+enc;
+  document.getElementById('share-url').textContent=url;
+  show('s-result');
+}
+
+function copyURL(){
+  var url=document.getElementById('share-url').textContent;
+  navigator.clipboard.writeText(url).then(function(){
+    var b=document.getElementById('copy-btn');
+    b.textContent='✅ Kopyalandı!';
+    setTimeout(function(){b.textContent='🔗 Linki Kopyala';},2000);
+  });
+}
+
+// ---- VIEW ----
+function dispPred(token){
+  try{
+    var data=JSON.parse(decodeURIComponent(escape(atob(token))));
+    document.getElementById('v-name').textContent=data.name+"'in Tahmini";
+    document.getElementById('v-champ').textContent='Şampiyon: '+(data.champ.f||'')+' '+(data.champ.n||'');
+
+    // Gruplar
+    var vg=document.getElementById('vt-groups');
+    vg.innerHTML='';
+    var grid=document.createElement('div');
+    grid.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px';
+    GK.forEach(function(g){
+      var t=GD[g].map(function(td,i){return{f:td[0],n:td[1],pts:0,w:0,d:0,l:0};});
+      PAIRS.forEach(function(p){
+        var a=p[0],b=p[1],res=(data.results[g]||{})[a+'_'+b];
+        if(!res)return;
+        if(res==='1'){t[a].pts+=3;t[a].w++;t[b].l++;}
+        else if(res==='X'){t[a].pts+=1;t[b].pts+=1;t[a].d++;t[b].d++;}
+        else if(res==='2'){t[b].pts+=3;t[b].w++;t[a].l++;}
+      });
+      t.sort(function(a,b){return b.pts-a.pts;});
+      var card=document.createElement('div'); card.className='card';
+      var h='<div class="card-head">Grup '+g+'</div><table class="st-table"><thead><tr><th>#</th><th>Takım</th><th>P</th></tr></thead><tbody>';
+      var rc=['r1','r2','r3',''];
+      t.forEach(function(tm,i){ h+='<tr class="'+rc[i]+'"><td>'+(i+1)+'</td><td>'+tm.f+' '+tm.n+'</td><td><b>'+tm.pts+'</b></td></tr>'; });
+      h+='</tbody></table>';
+      card.innerHTML=h;
+      grid.appendChild(card);
+    });
+    vg.appendChild(grid);
+
+    // 3. sıra
+    var vt=document.getElementById('vt-thirds');
+    if(data.thirds){
+      var sorted=data.thirds.slice().sort(function(a,b){return b.pts-a.pts;});
+      var th='<table class="thirds-tbl"><thead><tr><th>#</th><th>Grup</th><th>Takım</th><th>P</th><th>Durum</th></tr></thead><tbody>';
+      sorted.forEach(function(t,i){
+        var bdg=t.status==='pass'?'<span class="bdg bdg-p">✓</span>':t.status==='tie'?'<span class="bdg bdg-t">~</span>':'<span class="bdg bdg-o">✗</span>';
+        th+='<tr class="'+(t.status==='pass'?'pass':'out')+'"><td>'+(i+1)+'</td><td><b>'+t.g+'</b></td><td>'+t.f+' '+t.n+'</td><td><b>'+t.pts+'</b></td><td>'+bdg+'</td></tr>';
+      });
+      th+='</tbody></table>';
+      vt.innerHTML=th;
+    }
+
+    // Bracket
+    var vbi=document.getElementById('v-bracket'); vbi.innerHTML='';
+    var br=data.bracket;
+    [{l:'Son 32',d:br.r32,k:'r32'},{l:'Son 16',d:br.r16,k:'r16'},{l:'Çeyrek',d:br.qf,k:'qf'},{l:'Yarı',d:br.sf,k:'sf'}].forEach(function(rd){
+      var col=document.createElement('div'); col.className='rc';
+      var lbl=document.createElement('div'); lbl.className='rl'; lbl.textContent=rd.l; col.appendChild(lbl);
+      var mc=document.createElement('div'); mc.className='mc';
+      rd.d.forEach(function(m){
+        var box=document.createElement('div'); box.className='mb';
+        [[m.t1,1],[m.t2,2]].forEach(function(pair){
+          var t=pair[0],tn=pair[1];
+          var row=document.createElement('div');
+          row.className='mt'+(m.w===tn?' win':m.w&&m.w!==tn?' lose':'');
+          row.innerHTML='<span class="mf">'+(t.f||'')+'</span><span class="mn">'+(t.n||'?')+'</span>';
+          box.appendChild(row);
+        });
+        mc.appendChild(box);
+      });
+      col.appendChild(mc); vbi.appendChild(col);
+    });
+    var cc=document.createElement('div'); cc.className='champ-c';
+    var finBox=document.createElement('div'); finBox.className='mb'; finBox.style.marginBottom='5px';
+    [[br.fin.t1,1],[br.fin.t2,2]].forEach(function(pair){
+      var t=pair[0],tn=pair[1];
+      var row=document.createElement('div');
+      row.className='mt'+(br.fin.w===tn?' win':br.fin.w&&br.fin.w!==tn?' lose':'');
+      row.innerHTML='<span class="mf">'+(t.f||'')+'</span><span class="mn">'+(t.n||'?')+'</span>';
+      finBox.appendChild(row);
+    });
+    cc.innerHTML='<div class="rl">Final</div>';
+    cc.appendChild(finBox);
+    cc.innerHTML+='<div class="ct">🏆</div><div class="cl">Şampiyon</div><div class="cn">'+(data.champ.f||'')+' '+(data.champ.n||'')+'</div>';
+    vbi.appendChild(cc);
+    show('s-view');
+  } catch(e){ alert('Tahmin yüklenemedi.'); }
+}
+
+// ---- EVENTS ----
+document.getElementById('start-btn').onclick=function(){
+  var n=document.getElementById('pname').value.trim();
+  if(!n){ document.getElementById('pname').focus(); return; }
+  pname=n; results=initResults(); bracket=initBracket();
+  goStep(0); show('s-predict');
+};
+
+document.getElementById('load-btn').onclick=function(){
+  var t=new URLSearchParams(location.search).get('t');
+  if(t) dispPred(t); else alert("URL'de tahmin bulunamadı.");
+};
+
+document.getElementById('copy-btn').onclick=copyURL;
+
+document.getElementById('view-btn').onclick=function(){
+  var url=document.getElementById('share-url').textContent;
+  var t=new URLSearchParams('?'+(url.split('?')[1]||'')).get('t');
+  if(t) dispPred(t);
+};
+
+document.getElementById('restart-btn').onclick=function(){ show('s-home'); };
+document.getElementById('v-home-btn').onclick=function(){ show('s-home'); };
+document.getElementById('v-new-btn').onclick=function(){
+  var n=document.getElementById('pname').value.trim();
+  if(!n){ show('s-home'); return; }
+  pname=n; results=initResults(); bracket=initBracket();
+  goStep(0); show('s-predict');
+};
+
+// View tabs
+document.querySelectorAll('.tab').forEach(function(tab){
+  tab.onclick=function(){
+    document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+    document.querySelectorAll('.vtab').forEach(function(v){v.style.display='none';});
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab).style.display='block';
+  };
+});
+
+// Auto load
+window.onload=function(){
+  var t=new URLSearchParams(location.search).get('t');
+  if(t) dispPred(t);
+};
+</script>
+</body>
+</html>
